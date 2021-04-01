@@ -131,6 +131,9 @@ dmypy.json
 # Persistent queue
 app/data
 
+# Visual Studio Code
+.vscode
+
 # Sensitive data
 mailsend/credentials.json
 mailsend/token.pickle
