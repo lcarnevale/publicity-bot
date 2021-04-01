@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 
-"""GoogleAPI
+"""googleapi.py
 
 This implementation does its best to follow the Robert Martin's Clean code guidelines.
 The comments follows the Google Python Style Guide:
@@ -16,8 +16,8 @@ import logging
 from apiclient import errors
 from email.mime.text import MIMEText
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
 
 
 # If modifying these scopes, delete the file token.pickle.
@@ -25,31 +25,31 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 class GoogleAPI:
 
-    def __init__(self, sender, emails_to, emails_cc, subject, message_text):
-        """GoogleAPI inizializer
+    def __init__(self, sender, emails_to, emails_cc, subject, body):
+        """GoogleAPI inizializer.
 
         Args:
             sender (str): email address of the sender.
-            emails (list<str>): email addresses of the receivers.
+            emails_to (list<str>): email addresses of the recipients.
+            emails_cc (list<str>): email addresses of the carbon copy recipients.
             subject (str): the subject of the email message.
-            message_text (str): the text of the email message.
-            service: Authorized Gmail API service instance.
+            body (str): the text of the email message.
         """
         self.__sender = sender
         self.__emails_to = emails_to
         self.__emails_cc = ','.join(emails_cc)
-        self.__subject = subject
-        self.__message_text = message_text
+        self.__emails_subject = subject
+        self.__emails_body = body
         self.__service = build('gmail', 'v1', credentials=self.__get_credentials())
         self.__setup_logging()
 
     def __get_credentials(self):
         """Read or download the user token.
 
-        The file token.pickle stores the user's access and refresh tokens, and is
-        created automatically when the authorization flow completes for the first
-        time. If there are no (valid) credentials available, the user logs in using
-        the browser.
+        The file token.pickle stores the user's access and refresh tokens. It is
+        created automatically when the authorization flow completes the first
+        request. If there are no (valid) credentials available, the user logs-in 
+        using the browser.
         
         Returns:
             An object containing the user credentials.
@@ -85,26 +85,28 @@ class GoogleAPI:
     def send_all(self):
         """Send message to all emails
         """
-        logging.info('SUBJECT %s' % (self.__subject))
+        logging.info('SUBJECT %s' % (self.__emails_subject))
         for to in self.__emails_to:
-            message = self.__create_message(to)
+            message = self.__create_message(to, self.__emails_cc)
             self.__send_message(to, message)
 
-    def __create_message(self, to):
-        """Create a message for an email.
+    def __create_message(self, to, cc):
+        """Create the message for an email.
 
         Args:
-            to (str): email address of the receiver.
+            to (str): email address of the recipients.
 
         Returns:
             An object containing a base64url encoded email object.
         """
-        message = MIMEText(self.__message_text)
+        message = MIMEText(self.__emails_body)
         message['to'] = to
-        message['cc'] = self.__emails_cc
-        message['from'] = self.__sender
-        message['subject'] = self.__subject
-        return {'raw': base64.urlsafe_b64encode(message.as_string().encode()).decode()}
+        message['cc'] = cc
+        # message['from'] = self.__sender
+        message['subject'] = self.__emails_subject
+        return {
+            'raw': base64.urlsafe_b64encode(message.as_string().encode()).decode()
+        }
     
     def __send_message(self, to, message, user_id='me'):
         """Send an email message.
