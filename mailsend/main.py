@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
 
-"""mailcli
+"""main.py
 
 This implementation does its best to follow the Robert Martin's Clean code guidelines.
 The comments follows the Google Python Style Guide:
@@ -9,9 +9,9 @@ The comments follows the Google Python Style Guide:
 """
 
 __copyright__ = 'Copyright 2021, FCRlab at University of Messina'
-__author__ = 'Christian Sicari <csicari@unime.it>, Lorenzo Carnevale <lcarnevale@unime.it>'
-__credits__ = ''
-__description__ = 'mailcli'
+__author__ = 'Lorenzo Carnevale <lcarnevale@unime.it>'
+__credits__ = 'Christian Sicari <csicari@unime.it>'
+__description__ = 'This project aims making easy the delivery of Call For Papers invitations.'
 
 
 import argparse
@@ -33,47 +33,56 @@ def main():
                         action="store_true")
 
     parser.add_argument('-t', '--to',
-                        dest='emails_to',
+                        dest='emails_to_file',
                         help='CSV formatted file containing To emails.',
                         type=str,
                         required=True)
 
     parser.add_argument('-c', '--cc',
-                        dest='emails_cc',
+                        dest='emails_cc_file',
                         help='CSV formatted file containing CC emails.',
                         type=str)
 
     parser.add_argument('-s', '--subject',
                         dest='subject',
                         help='Subject of the email.',
-                        type=str)
+                        type=str,
+                        required=True)
 
     parser.add_argument('-b', '--body',
-                        dest='body',
-                        help='Text of the email.',
-                        type=str)
-
-    parser.add_argument('-B', '--bodyfile',
                         dest='body_file',
                         help='File containing the text of the email.',
-                        type=str)
+                        type=str,
+                        required=True)
 
     options = parser.parse_args()
 
     verbosity = options.verbosity
-    to = pd.read_csv(options.emails_to)['to']
-    cc = []
-    if options.emails_cc:
-        cc = pd.read_csv(options.emails_cc)['cc']
-    subject = options.subject
-    body_file = options.body_file
-    body = options.body
+
+    emails_to = read_to_emails(options.emails_to_file)
+    emails_cc = read_cc_emails(options.emails_cc_file)
+    emails_subject = options.subject
+    emails_body = read_body(options.body_file)
+    emails_from = "FCRLab Unime"
+    
+    gapi = GoogleAPI(emails_from, emails_to, emails_cc, emails_subject, emails_body)
+    gapi.send_all()
+
+def read_to_emails(emails_to_file):
+    return pd.read_csv(emails_to_file)['to']
+
+def read_cc_emails(emails_cc_file):
+    emails_cc = []
+    if emails_cc_file:
+        cc = pd.read_csv(emails_cc_file)['cc']
+    return emails_cc
+
+def read_body(body_file):
+    body = ''
     with open(body_file, 'r') as f:
         body = f.read()
-    from_ = "FCRLab Unime"
-    
-    gapi = GoogleAPI(from_, to, cc, subject, body)
-    gapi.send_all()
+    return body
+
 
 if __name__ == '__main__':
     main()
