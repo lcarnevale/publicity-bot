@@ -20,7 +20,7 @@ from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 
-# If modifying these scopes, delete the file token.pickle.
+# If modify these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 class GoogleAPI:
