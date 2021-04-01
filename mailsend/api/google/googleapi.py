@@ -25,17 +25,15 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 class GoogleAPI:
 
-    def __init__(self, sender, emails_to, emails_cc, subject, body):
+    def __init__(self, emails_to, emails_cc, subject, body):
         """GoogleAPI inizializer.
 
         Args:
-            sender (str): email address of the sender.
             emails_to (list<str>): email addresses of the recipients.
             emails_cc (list<str>): email addresses of the carbon copy recipients.
             subject (str): the subject of the email message.
             body (str): the text of the email message.
         """
-        self.__sender = sender
         self.__emails_to = emails_to
         self.__emails_cc = ','.join(emails_cc)
         self.__emails_subject = subject
@@ -102,7 +100,6 @@ class GoogleAPI:
         message = MIMEText(self.__emails_body)
         message['to'] = to
         message['cc'] = cc
-        # message['from'] = self.__sender
         message['subject'] = self.__emails_subject
         return {
             'raw': base64.urlsafe_b64encode(message.as_string().encode()).decode()

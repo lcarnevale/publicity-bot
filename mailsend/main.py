@@ -63,9 +63,8 @@ def main():
     emails_cc = read_cc_emails(options.emails_cc_file)
     emails_subject = options.subject
     emails_body = read_body(options.body_file)
-    emails_from = "FCRLab Unime"
     
-    gapi = GoogleAPI(emails_from, emails_to, emails_cc, emails_subject, emails_body)
+    gapi = GoogleAPI(emails_to, emails_cc, emails_subject, emails_body)
     gapi.send_all()
 
 def read_to_emails(emails_to_file):
