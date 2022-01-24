@@ -21,11 +21,11 @@ pip install -r requirements.txt
 The application strongly requires a list of recipients, the email subject and the body. The list of carbon copy recipients is instead optional. These parameters must be stored within independent files as follow.
 
 <p align="center">
-  <img src="pics/emails-to-sample.png">
+  <img src="docs/emails-to-sample.png">
   <br>
   <em>Example of emails to</em>
   <br> <br>
-  <img src="pics/emails-body-sample.png">
+  <img src="docs/emails-body-sample.png">
   <br>
   <em>Example of emails body</em>
 </p>
