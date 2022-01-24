@@ -15,7 +15,10 @@ import os.path
 import logging
 from apiclient import errors
 from email.mime.text import MIMEText
+from google.oauth2 import service_account
+from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from google.auth import default
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 
@@ -52,6 +55,7 @@ class GoogleAPI:
         Returns:
             An object containing the user credentials.
         """
+        API_KEY = 'AIzaSyCKjI6o1aKE9Pt-hEOGp3aPCWrUiSMbHHU'
         credentials = None
         token_filepath = 'token.pickle'
         credentials_filepath = 'credentials.json'
@@ -64,9 +68,17 @@ class GoogleAPI:
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(credentials_filepath, SCOPES)
                 credentials = flow.run_local_server(port=0)
+                # credentials = Credentials(
+                #     token = API_KEY,
+                #     refresh_token = None,
+                #     token_uri = None,
+                #     client_id = '446755206981-m91f2353a97mkhfse0desfi1ftia0hf4.apps.googleusercontent.com',
+                #     client_secret = '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',
+                #     scopes=SCOPES
+                # )
             with open(token_filepath, 'wb') as token:
                 pickle.dump(credentials, token)
-        
+                
         return credentials
 
     def __setup_logging(self, verbosity=False):
