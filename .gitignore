@@ -137,3 +137,9 @@ app/data
 # Sensitive data
 mailsend/credentials.json
 mailsend/token.pickle
+
+# VS Code
+*.code-workspace
+
+# Custom
+samples/
