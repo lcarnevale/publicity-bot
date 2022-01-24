@@ -1,12 +1,8 @@
-# Call For Paper Invitation Bot
+# Publicity Bot
 
 <img src="https://img.shields.io/badge/python-v3-blue" alt="python-v3-blue">
 
-While the management of special issues, workshop and conferences becomes more complex, automatic tools come to the rescue. This project includes a simple command line program to send email via Google API. Suggestions and bug reports are always welcome. If you have any question, request or suggestion, please enter it in the Issues with appropriate label.
-
-
-## Get Google Credendials
-Follow the instructions [here](https://developers.google.com/gmail/api/quickstart/python) to download the credential JSON file required to run the *c4pinvitation-email-bot*.
+While the management of special issues, workshop and conferences becomes more complex, automatic tools come to the rescue. This project includes a simple command line program to send email via Google. Suggestions and bug reports are always welcome. If you have any question, request or suggestion, please open a new ticket in the Issues with appropriate label.
 
 ## How to build it
 Download latest release [here]() and make up the virtual environment.
@@ -34,7 +30,11 @@ Run then the application as follow.
 
 ```bash
 python main.py \
+    --host smtp.gmail.com \
+    --port 465 \
+    --from user@example.com \
     --to <PATH/OF/TO-FILE> \
-    --subject "try it out" \
+    --cc <PATH/OF/CC-FILE> \
+    --subject <PATH/OF/SUBJECT-FILE> \
     --body <PATH/OF/BODY-FILE>
 ```
