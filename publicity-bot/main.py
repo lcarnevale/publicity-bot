@@ -99,7 +99,9 @@ def main():
     api.send_all()
 
 def read_email_to(email_to_file):
-    return pd.read_csv(email_to_file)['to']
+    df = pd.read_csv(email_to_file)['to']
+    df.dropna(inplace=True)
+    return df
 
 def read_email_cc(email_cc_file):
     email_cc = []
